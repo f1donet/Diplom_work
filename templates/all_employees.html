@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+{% block body %}
+  <div class="actions">
+    <!-- Flash‑сообщения -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <h2>Действия:</h2>
+    <ul>
+      <h3><a href="{{ url_for('search_employees') }}">Поиск сотрудника</a></h3>
+      <h4>____________________________________________________________________________</h4>
+      <h3><a href="{{ url_for('sort_name') }}">Сортировка по имени (A - Z)</a></h3>
+      <h3>Сортировка по зарплате: <a href="{{ url_for('sort_salary_asc') }}">по возрастанию</a> // <a href="{{ url_for('sort_salary_desc') }}">по убыванию</a></h3>
+      <h3>Сортировка по дате приёма: <a href="{{ url_for('sort_hire_date_asc') }}"> по возрастанию</a> // <a href="{{ url_for('sort_hire_date_desc') }}"> по убыванию</a></h3>
+      <h4>____________________________________________________________________________</h4>
+      <h3><a href="{{ url_for('add_employee') }}"> Добавить сотрудника</a></h3>
+      <h3><a href="{{ url_for('delete_employee') }}"> Удалить сотрудника</a></h3>
+      <h4>____________________________________________________________________________</h4>
+    </ul>
+  </div>
+
+  <h2>Полный список сотрудников компании</h2>
+
+  <style>
+    .employees-table-container {
+      overflow-x: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    .employees-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-size: 14px;
+      color: #333;
+    }
+    .employees-table thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .employees-table th {
+      background-color: #f8f9fa;
+      color: #495057;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid #dee2e6;
+      font-weight: 600;
+    }
+    .employees-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .employees-table tbody tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+    .employees-table tbody tr:hover {
+      background-color: #f1f5f9;
+      cursor: default;
+    }
+    .employees-table a {
+      color: #0d6efd;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .employees-table a:hover {
+      text-decoration: underline;
+    }
+  </style>
+
+  <div class="employees-table-container">
+    <table class="employees-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>ФИО</th>
+          <th>Должность</th>
+          <th>Дата приёма</th>
+          <th>Зарплата</th>
+          <th>Руководитель</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for employee in employees %}
+        <tr>
+          <td>{{ employee.id }}</td>
+          <td>{{ employee.full_name }}</td>
+          <td>{{ employee.position }}</td>
+          <td>{{ employee.hire_date.strftime('%d.%m.%Y') if employee.hire_date else '—' }}</td>
+          <td>{{ employee.salary }} руб.</td>
+          <td>
+            {% if employee.manager and employee.manager.full_name %}
+              <a href="{{ url_for('employees_by_manager', manager_id=employee.manager_id) }}">
+                Начальник: {{ employee.manager.full_name }}
+              </a>_//_<a href="{{ url_for('change_manager', employee_id=employee.id) }}">Изменить руководителя</a>
+            {% else %}
+              Нет начальника
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

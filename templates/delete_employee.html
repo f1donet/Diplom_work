@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block body %}
+  <div>
+  <h2>Удалить сотрудника</h2>
+    <!-- Flash‑сообщения -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <h3>Введите ID сотрудника в поле ниже</h3>
+  <form method="POST" action="{{ url_for('delete_employee') }}">
+  <!-- Скрытое поле с ID сотрудника -->
+  <input name="id" value="{{ employee.id }}">
+
+  <!-- Кнопка удаления -->
+  <button type="submit" class="btn-delete">Удалить сотрудника</button>
+  </form>
+  </div>
+{% endblock %}

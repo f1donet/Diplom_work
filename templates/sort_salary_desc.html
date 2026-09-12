@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Сортировка сотрудников по зарплате в порядке убывания </h2>
+    {%- for employee in employees %}
+      <ul>
+        <li>
+        ID: {{ employee.id }} |
+        ФИО: {{ employee.full_name }} |
+        Должность: {{ employee.position }} |
+        Дата приема на работу: {{ employee.hire_date }} |
+        Зарплата: {{ employee.salary }} |
+        ID начальника: {{ employee.manager_id }}
+        </li>
+        </ul>
+        <hr>
+    {%- endfor %}
+{% endblock %}

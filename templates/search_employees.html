@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+{% block body %}
+<head>
+    <title>Поиск сотрудников по имени</title>
+    <style>
+        .search-form {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .form-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            padding: 8px 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .no-results {
+            color: #6c757d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Поиск сотрудников по имени</h1>
+
+        <!-- Форма поиска -->
+        <form method="GET" action="/search" class="search-form">
+            <div class="form-group">
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ search|default('', true) }}"
+                    placeholder="Введите имя, фамилию или часть имени..."
+                    autocomplete="off"
+                    aria-label="Поле поиска сотрудников по имени"
+                >
+                <button type="submit" aria-label="Выполнить поиск">Найти</button>
+            </div>
+        </form>
+
+        <!-- Результаты поиска -->
+        {% if employees %}
+            <p>Найдено сотрудников: <strong>{{ employees|length }}</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>ФИО</th>
+                        <th>Должность</th>
+                        <th>Дата приёма</th>
+                        <th>Зарплата</th>
+                        <th>Руководитель</th>
+            </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td>{{ employee.id }}</td>
+                        <td>{{ employee.full_name }}</td>
+                        <td>{{ employee.position }}</td>
+                        <td>{{ employee.hire_date.strftime('%d.%m.%Y') if employee.hire_date else '—' }}</td>
+                        <td>{{ employee.salary }} руб.</td>
+                        <td>
+                    {% if employee.manager %}
+                        {{ employee.manager.full_name }}
+                    {% else %}
+                        —
+            {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-results">Сотрудники с таким именем не найдены.</p>
+        {% endif %}
+    </div>
+</body>
+{% endblock %}

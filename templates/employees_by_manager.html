@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Сотрудники в подчинении у {{ manager.full_name }} </h2>
+    {%- for employee in employees %}
+      <ul>
+          <li> ФИО: {{ employee.full_name }} </li>
+          <li>Должность: {{ employee.position }} </li>
+          <li> Дата приема на работу: {{ employee.hire_date }} </li>
+        </ul>
+        <hr>
+    {%- endfor %}
+{% endblock %}

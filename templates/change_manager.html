@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block body %}
+  <div class="change-manager-container">
+    <h1>Изменение начальника для {{ employee.full_name }}</h1>
+
+    <!-- Flash‑сообщения -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="employee-info">
+      <p><strong>ID сотрудника:</strong> {{ employee.id }}</p>
+      <p><strong>Должность:</strong> {{ employee.position }}</p>
+      <p><strong>Дата приёма:</strong> {{ employee.hire_date }}</p>
+      <p><strong>Зарплата:</strong> {{ employee.salary }}</p>
+
+      <p><strong>Текущий начальник:</strong>
+        {% if employee.manager %}
+          {{ employee.manager.full_name }}
+          {% if employee.manager.position %}
+            ({{ employee.manager.position }})
+          {% endif %}
+        {% else %}
+          Не назначен
+        {% endif %}
+      </p>
+    </div>
+
+    <form method="POST" class="manager-form">
+      <div class="form-group">
+        <label for="manager_id">Выбрать нового начальника:</label>
+        <select name="manager_id" id="manager_id" class="form-select">
+          <option value="">-- Без начальника --</option>
+          {% for manager in managers %}
+            <option
+              value="{{ manager.id }}"
+              {% if employee.manager and employee.manager.id == manager.id %}selected{% endif %}>
+              {{ manager.full_name }}
+              {% if manager.position %} ({{ manager.position }}){% endif %}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+        <a href="{{ url_for('all_employees') }}" class="btn btn-secondary">Вернуться к списку сотрудников</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}
