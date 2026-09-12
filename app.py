@@ -50,7 +50,7 @@ def sort_hire_date_asc():
 
 @app.route("/sort/hire_date_desc")
 def sort_hire_date_desc():
-    employees = Employee.query.order_by(Employee.hire_date.asc()).all()
+    employees = Employee.query.order_by(Employee.hire_date.desc()).all()
     return render_template("sort_hire_date_desc.html", employees=employees)
 
 @app.route("/search/")
